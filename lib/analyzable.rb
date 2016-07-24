@@ -11,14 +11,7 @@ module Analyzable
   end
 
   def print_report(products)
-    rows = []
-    products.each do |product|
-      rows << [product.id, product.brand, product.name, product.price]
-    end
-    table = Terminal::Table.new :title => "Product Report",
-        :headings => ['ID', 'Brand', 'Name', 'Price'],
-        :rows => rows
-    output = with_captured_stdout { puts table }
+    output = summary_report(products) + detailed_report(products)
   end
 
   def count_by_brand(products)
@@ -29,7 +22,41 @@ module Analyzable
     count = {products.first.name => products.length}
   end
 
+  def summary_report(products)
+    brands = products.map(&:brand)
+    names = products.map(&:name)
+    output = "\n" + stars + "Summary Report (start) " + stars + "\n"
+    output = output + "\nAvg. price = $#{average_price(products)}\n"
+    output = output + "\nInventory by Brand:\n"
+    brands.each do |brand|
+      count = count_by_brand(Product.where(brand: brand))[brand]
+      output = output + "  - #{brand}: #{count}\n"
+    end
+    output = output + "\nInventory by Name:\n"
+    names.each do |name|
+      count = count_by_name(Product.where(name: name))[name]
+      output = output + "  - #{name}: #{count}\n"
+    end
+    output = output + "\n" + stars + "Summary Report (end) " + stars + "\n\n\n"
+    output
+  end
+
   private
+
+  def stars
+    "*"*10
+  end
+
+  def detailed_report(products)
+    rows = []
+    products.each do |product|
+      rows << [product.id, product.brand, product.name, product.price]
+    end
+    table = Terminal::Table.new :title => "Detailed Product Report",
+        :headings => ['ID', 'Brand', 'Name', 'Price'],
+        :rows => rows
+    output = with_captured_stdout { puts table }
+  end
 
   def with_captured_stdout
     begin
