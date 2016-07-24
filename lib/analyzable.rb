@@ -23,8 +23,8 @@ module Analyzable
   end
 
   def summary_report(products)
-    brands = products.map(&:brand)
-    names = products.map(&:name)
+    brands = products.map(&:brand).uniq
+    names = products.map(&:name).uniq
     output = "\n" + stars + "Summary Report (start) " + stars + "\n"
     output = output + "\nAvg. price = $#{average_price(products)}\n"
     output = output + "\nInventory by Brand:\n"
