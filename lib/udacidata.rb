@@ -42,14 +42,22 @@ class Udacidata
   end
 
   def self.find(id)
-    @@all.select {|item| item.id == id}.first
+    if @@all.map(&:id).include?(id)
+      @@all.select {|item| item.id == id}.first
+    else
+      raise ProductNotFoundError, "Product id of #{id} cannot be found."
+    end
   end
 
   def self.destroy(id)
-    rm_index = @@all.map(&:id).index(id)
-    rm_item = @@all.delete_at(rm_index)
-    self.rewrite_file
-    rm_item
+    if @@all.map(&:id).include?(id)
+      rm_index = @@all.map(&:id).index(id)
+      rm_item = @@all.delete_at(rm_index)
+      self.rewrite_file
+      rm_item
+    else
+      raise ProductNotFoundError, "Product id of #{id} cannot be destroyed, because it cannot be found."
+    end
   end
 
   def self.find_by_brand(brand)
