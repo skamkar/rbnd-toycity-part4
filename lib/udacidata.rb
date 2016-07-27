@@ -60,16 +60,6 @@ class Udacidata
     end
   end
 
-  def self.find_by_brand(brand)
-    brand_index = @@all.map(&:brand).index(brand)
-    @@all[brand_index]
-  end
-
-  def self.find_by_name(name)
-    name_index = @@all.map(&:name).index(name)
-    @@all[name_index]
-  end
-
   def self.where(query)
     type = query.keys.first
     value = query.values.first
