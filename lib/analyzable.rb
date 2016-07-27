@@ -15,11 +15,17 @@ module Analyzable
   end
 
   def count_by_brand(products)
-    count = {products.first.brand => products.length}
+    brands = products.map(&:brand)
+    count = Hash.new 0
+    brands.each {|brand| count[brand] += 1}
+    count
   end
 
   def count_by_name(products)
-    count = {products.first.name => products.length}
+    names = products.map(&:name)
+    count = Hash.new 0
+    names.each {|brand| count[brand] += 1}
+    count
   end
 
   def summary_report(products)
